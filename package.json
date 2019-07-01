@@ -1,0 +1,22 @@
+{
+  "name": "node-restful",
+  "version": "1.0.0",
+  "description": "node api boilerplate",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dxshim90/Node-Restful-api-boilerplate.git"
+  },
+  "author": "Daniel Shimield",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dxshim90/Node-Restful-api-boilerplate/issues"
+  },
+  "homepage": "https://github.com/dxshim90/Node-Restful-api-boilerplate#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
