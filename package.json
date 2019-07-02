@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/dxshim90/Node-Restful-api-boilerplate#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "mongoose": "^5.6.2",
     "morgan": "^1.9.1"
   },
   "devDependencies": {
