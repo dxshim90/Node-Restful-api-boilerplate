@@ -7,7 +7,8 @@ const productRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
 
 mongoose.connect('mongodb+srv://Danny123:Danny123@cluster0-8nih0.mongodb.net/test?retryWrites=true&w=majority', {
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useFindAndModify: false
 })
 
 app.use(morgan('dev'))

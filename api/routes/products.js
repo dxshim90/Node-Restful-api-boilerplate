@@ -9,10 +9,24 @@ const Product = require('../models/product')
 //url = /products
 
 router.get('/', (req, res, next) => {
-    Product.find().exec()
+    Product.find().select('name price _id')
+    .exec()
     .then(docs => {
-        console.log(docs)
-        res.status(200).json(docs)
+       const response = {
+           count: docs.length,
+           products: docs.map(doc => {
+               return {
+                   name: doc.name,
+                   price: doc.price,
+                   _id: doc._id,
+                   request: {
+                       type: 'GET',
+                       url: `http://localhost:3000/products/${doc._id}`
+                   }
+               }
+           })
+       }
+        res.status(200).json(response)
     })
     .catch(err => {
         console.log(err)
@@ -32,9 +46,17 @@ router.post('/', (req, res, next) => {
     })
     product.save().then(result => {
         console.log(result)
-        res.status(200).json({
-            message: 'Handling POST Request to /products',
-            createdProduct: product
+        res.status(201).json({
+            message: 'Product Created',
+            createdProduct: {
+                name: result.name,
+                price: result.price,
+                _id: result._id,
+                request: {
+                    type: 'GET',
+                    url: `http://localhost:3000/products/${result._id}`
+            }
+        }
     })
     .catch(err => {
         console.log(err)
@@ -49,14 +71,18 @@ router.post('/', (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
     const id = req.params.id
-    Product.findById(id).exec().then(doc => {
-        console.log(doc)
+   Product.findById(id).exec().then(doc => {
+        const product = {
+            name: doc.name,
+            price: doc.price,
+            _id: doc._id
+        }
         if (!doc) {
             res.status(500).json({
-                message: 'No Such Product'
+                message: 'No Such Product',
             })
         }
-        res.status(200).json(doc)
+        res.status(200).json(product)
     })
     .catch(err => {
         console.log(err)
@@ -66,25 +92,30 @@ router.get('/:id', (req, res, next) => {
     })
 })
 
-router.patch('/:id', (req, res, next) => {
+router.patch('/:id', async (req, res, next) => {
     const id = req.params.id
-    const updateOps = {}
-    for (const ops of req.body) {
-        updateOps[ops.propName] = ops.value
-    }
-    Product.update({_id: id}, {$set: updateOps})
-    .exec()
-    .then(result => {
-        console.log(result)
-        res.status(200).json(result)
-    })
-    .catch(err => {
-        console.log(err)
-        res.status(500).json({
-            error: err
-        })
-    })
-})
+   try {
+       const newPro = {
+           name: req.body.name,
+           price: req.body.price
+       }
+        await Product.findByIdAndUpdate(
+           {_id: id},
+           {$set: newPro},
+           {new: true}, (err, doc) => {
+            if (err) {
+                console.log("Something wrong when updating data!");
+            }
+            console.log(doc)
+           res.json(doc)
+           })
+        } catch (err) {
+            console.log(err)
+            res.status(500).json({
+                error: err
+       })
+       console.log(updatedProduct)
+    }})
 
 router.delete('/:id', async (req, res, next) => {
         const id = req.params.id
